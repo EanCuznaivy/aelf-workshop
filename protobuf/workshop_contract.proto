@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+import "aelf/core.proto";
+import "aelf/options.proto";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "AElf.Contracts.Workshop";
+
+service WorkshopContract {
+
+    option (aelf.csharp_state) = "WorkshopContractState";
+
+    // Initialize
+    rpc Hello (HelloInput) returns (HelloReturn) { }
+    rpc StartWorkshop (StartWorkshopInput) returns (google.protobuf.Empty) { }
+    rpc EndWorkshop (EndWorkshopInput) returns (google.protobuf.Empty) { }
+    rpc ResetOwner (aelf.Address) returns (google.protobuf.Empty) { }
+
+    rpc GetCurrentWorkshop (google.protobuf.Empty) returns (Workshop) {
+        option (aelf.is_view) = true;
+    }
+    rpc GetWorkshop (google.protobuf.Int64Value) returns (Workshop) {
+        option (aelf.is_view) = true;
+    }
+    rpc GetOwner (google.protobuf.Empty) returns (aelf.Address) {
+        option (aelf.is_view) = true;
+    }
+}
+
+message Workshop {
+    int64 id = 1; // Starts from 1.
+    google.protobuf.Timestamp start_time = 2;
+    google.protobuf.Timestamp end_time = 3;
+    string title = 4;
+    int64 start_balance = 5;
+    int64 end_balance = 6;
+}
+
+message HelloReturn {
+    string Value = 1;
+}
+
+// Inputs
+message HelloInput {
+    string name = 1;
+    aelf.Address owner = 2;
+}
+
+message StartWorkshopInput {
+    string title = 1;
+}
+
+message EndWorkshopInput {
+}
+
+// Events
+message WorkshopsStarted {
+    option (aelf.is_event) = true;
+    string name = 1;
+}
